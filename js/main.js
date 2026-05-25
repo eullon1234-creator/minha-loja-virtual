@@ -355,7 +355,7 @@ class Admin {
       });
       const data = await response.json();
       if (data.success) {
-        const url = data.data.url;
+        const url = data.data.display_url || data.data.image.url || data.data.url;
         if (urlInput) urlInput.value = url;
         if (preview) {
           preview.innerHTML = `<img src="${url}" alt="Preview">`;
