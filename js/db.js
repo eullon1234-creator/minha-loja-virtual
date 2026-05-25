@@ -5,20 +5,25 @@ class LojaDB {
     FAVORITOS: 'loja_favoritos',
     TEMA: 'loja_tema',
     PEDIDOS: 'loja_pedidos',
-    ADMIN_SESSION: 'loja_admin'
+    ADMIN_SESSION: 'loja_admin',
+    VERSAO: 'loja_versao'
   };
+
+  static VERSAO_ATUAL = '2';
 
   static async init() {
     try {
       const response = await fetch('data/produtos.json');
       const data = await response.json();
-      const stored = localStorage.getItem(LojaDB.KEYS.PRODUTOS);
-      if (!stored) {
+      const versaoSalva = localStorage.getItem(LojaDB.KEYS.VERSAO);
+      if (versaoSalva !== LojaDB.VERSAO_ATUAL) {
         localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify(data.produtos));
+        localStorage.setItem(LojaDB.KEYS.VERSAO, LojaDB.VERSAO_ATUAL);
       } else {
-        const parsed = JSON.parse(stored);
-        if (parsed.length === 0) {
+        const stored = localStorage.getItem(LojaDB.KEYS.PRODUTOS);
+        if (!stored) {
           localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify(data.produtos));
+          localStorage.setItem(LojaDB.KEYS.VERSAO, LojaDB.VERSAO_ATUAL);
         }
       }
       return true;
