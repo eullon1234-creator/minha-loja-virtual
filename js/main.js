@@ -349,7 +349,7 @@ class Admin {
     formData.append('image', file);
 
     try {
-      const response = await fetch('https://api.imgbb.com/1/upload?key=d0d77f426e918d2ca7796e10308ecb7d', {
+      const response = await fetch('https://api.imgbb.com/1/upload?key=849ff64039fc5da756442889c526728a', {
         method: 'POST',
         body: formData
       });
