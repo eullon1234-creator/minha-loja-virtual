@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin - StyleStore</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👕</text></svg>">
+  <style>
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body data-page="admin">
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">S</div>
+        <span>StyleStore</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Início</a>
+        <a href="catalogo.html" class="nav-link">Catálogo</a>
+        <a href="carrinho.html" class="nav-link">Carrinho</a>
+        <a href="admin.html" class="nav-link active">Admin</a>
+      </nav>
+      <div class="header-actions">
+        <a href="carrinho.html" class="icon-btn" title="Carrinho">
+          🛒
+          <span class="badge">0</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu">
+    <a href="index.html" class="nav-link">Início</a>
+    <a href="catalogo.html" class="nav-link">Catálogo</a>
+    <a href="carrinho.html" class="nav-link">Carrinho</a>
+    <a href="admin.html" class="nav-link">Admin</a>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="admin-login" id="adminLogin">
+    <div class="admin-login-box">
+      <h1>🔐 Painel Admin</h1>
+      <div class="form-group">
+        <label>Senha de Acesso</label>
+        <input type="password" id="adminSenha" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')Admin.fazerLogin()">
+      </div>
+      <button class="btn btn-primary" onclick="Admin.fazerLogin()">Entrar</button>
+      <p style="text-align:center;margin-top:15px;font-size:0.85rem;color:var(--text-secondary)">Senha padrão: admin123</p>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-panel hidden" id="adminPanel">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-top:20px">
+        <h1 style="font-size:1.8rem">Painel Administrativo</h1>
+        <button class="btn btn-outline" onclick="Admin.fazerLogout()" style="border-color:var(--secondary);color:var(--secondary)">Sair</button>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="produtos">📦 Produtos</button>
+        <button class="admin-tab" data-tab="cadastro">➕ Cadastrar</button>
+        <button class="admin-tab" data-tab="pedidos">📋 Pedidos</button>
+      </div>
+
+      <!-- TAB PRODUTOS -->
+      <div class="admin-content active" id="produtos">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="adminProdutosBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB CADASTRO -->
+      <div class="admin-content" id="cadastro">
+        <form class="admin-form" id="adminForm">
+          <input type="hidden" id="formId" value="">
+
+          <div class="form-group">
+            <label>Nome do Produto *</label>
+            <input type="text" id="formNome" required placeholder="Ex: Camiseta Básica Premium">
+          </div>
+
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea id="formDescricao" placeholder="Descrição detalhada do produto..." rows="4"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoria *</label>
+              <input type="text" id="formCategoria" required placeholder="Ex: Camisetas">
+            </div>
+            <div class="form-group">
+              <label>Preço *</label>
+              <input type="number" id="formPreco" required step="0.01" min="0" placeholder="99.90">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tamanhos (separados por vírgula)</label>
+              <input type="text" id="formTamanhos" placeholder="P, M, G, GG">
+            </div>
+            <div class="form-group">
+              <label>Cores (separadas por vírgula)</label>
+              <input type="text" id="formCores" placeholder="Preto, Branco, Azul">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Estoque *</label>
+              <input type="number" id="formEstoque" required min="0" value="10">
+            </div>
+            <div class="form-group">
+              <label>URL da Imagem</label>
+              <input type="url" id="formImagem" placeholder="https://...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Upload de Imagem (ImgBB)</label>
+            <input type="file" id="formImagemUpload" accept="image/*">
+          </div>
+          <div class="img-preview" id="formImagemPreview" onclick="document.getElementById('formImagemUpload').click()">
+            <span>Clique para selecionar imagem ou arraste aqui</span>
+          </div>
+          <button type="button" class="btn btn-gold" style="margin-top:10px" onclick="Admin.uploadImgBB()">
+            Upload para ImgBB
+          </button>
+
+          <div style="display:flex;gap:20px;margin:15px 0">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="formDestaque"> Em Destaque
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="formNovidade"> Novidade
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+              <input type="checkbox" id="formMaisVendido"> Mais Vendido
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="formSubmit" style="width:100%;justify-content:center;padding:14px">
+            Cadastrar Produto
+          </button>
+        </form>
+      </div>
+
+      <!-- TAB PEDIDOS -->
+      <div class="admin-content" id="pedidos">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Pagamento</th>
+                <th>Data</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminPedidosBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

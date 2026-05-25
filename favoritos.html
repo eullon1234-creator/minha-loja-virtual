@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meus produtos favoritos - StyleStore">
+  <title>Favoritos - StyleStore</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👕</text></svg>">
+</head>
+<body data-page="favoritos">
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">S</div>
+        <span>StyleStore</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Início</a>
+        <a href="catalogo.html" class="nav-link">Catálogo</a>
+        <a href="carrinho.html" class="nav-link">Carrinho</a>
+        <a href="favoritos.html" class="nav-link active">Favoritos</a>
+      </nav>
+      <div class="header-actions">
+        <label class="theme-toggle">
+          <input type="checkbox" id="themeToggle">
+          <span>🌓</span>
+        </label>
+        <a href="carrinho.html" class="icon-btn" title="Carrinho">
+          🛒
+          <span class="badge">0</span>
+        </a>
+        <button class="mobile-toggle" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu">
+    <a href="index.html" class="nav-link">Início</a>
+    <a href="catalogo.html" class="nav-link">Catálogo</a>
+    <a href="carrinho.html" class="nav-link">Carrinho</a>
+    <a href="favoritos.html" class="nav-link">Favoritos</a>
+    <a href="admin.html" class="nav-link">Admin</a>
+  </div>
+
+  <section class="section" style="padding-top:120px">
+    <div class="container">
+      <div class="section-title">
+        <h2>Meus Favoritos</h2>
+        <p>Produtos que você salvou</p>
+        <span class="line"></span>
+      </div>
+      <div class="product-grid" id="favoritosGrid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>StyleStore</h4>
+          <p>Sua loja de moda premium online.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Links Rápidos</h4>
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="carrinho.html">Carrinho</a></li>
+            <li><a href="favoritos.html">Favoritos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Atendimento</h4>
+          <ul>
+            <li><a href="https://wa.me/5511999999999" target="_blank">WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 StyleStore. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5511999999999" target="_blank" class="notification-btn" title="Fale conosco pelo WhatsApp">📱</a>
+  <button class="scroll-top" title="Voltar ao topo">↑</button>
+
+  <script src="js/db.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const favoritosIds = LojaDB.getFavoritos();
+      const todos = LojaDB.getProdutos();
+      const favoritos = todos.filter(p => favoritosIds.includes(p.id));
+      Produtos.renderizarGrade(favoritos, 'favoritosGrid');
+    });
+  </script>
+</body>
+</html>
