@@ -1,30 +1,34 @@
 class LojaDB {
   static KEYS = {
     PRODUTOS: 'loja_produtos',
+    PRODUTOS_BASE: 'loja_produtos_base',
     CARRINHO: 'loja_carrinho',
     FAVORITOS: 'loja_favoritos',
     TEMA: 'loja_tema',
     PEDIDOS: 'loja_pedidos',
-    ADMIN_SESSION: 'loja_admin',
-    VERSAO: 'loja_versao'
+    ADMIN_SESSION: 'loja_admin'
   };
 
-  static VERSAO_ATUAL = '2';
+  static produtosCache = null;
 
   static async init() {
     try {
-      const response = await fetch('data/produtos.json');
+      const response = await fetch('data/produtos.json?' + Date.now());
       const data = await response.json();
-      const versaoSalva = localStorage.getItem(LojaDB.KEYS.VERSAO);
-      if (versaoSalva !== LojaDB.VERSAO_ATUAL) {
+      localStorage.setItem(LojaDB.KEYS.PRODUTOS_BASE, JSON.stringify(data.produtos));
+
+      const stored = localStorage.getItem(LojaDB.KEYS.PRODUTOS);
+      if (!stored) {
         localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify(data.produtos));
-        localStorage.setItem(LojaDB.KEYS.VERSAO, LojaDB.VERSAO_ATUAL);
       } else {
-        const stored = localStorage.getItem(LojaDB.KEYS.PRODUTOS);
-        if (!stored) {
-          localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify(data.produtos));
-          localStorage.setItem(LojaDB.KEYS.VERSAO, LojaDB.VERSAO_ATUAL);
-        }
+        const parsed = JSON.parse(stored);
+        const baseIds = data.produtos.map(p => p.id);
+        const merged = data.produtos.map(p => {
+          const editado = parsed.find(s => s.id === p.id);
+          return editado || p;
+        });
+        const adicionados = parsed.filter(p => !baseIds.includes(p.id));
+        localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify([...merged, ...adicionados]));
       }
       return true;
     } catch (err) {
@@ -34,8 +38,10 @@ class LojaDB {
   }
 
   static getProdutos() {
+    if (LojaDB.produtosCache) return LojaDB.produtosCache;
     try {
-      return JSON.parse(localStorage.getItem(LojaDB.KEYS.PRODUTOS)) || [];
+      LojaDB.produtosCache = JSON.parse(localStorage.getItem(LojaDB.KEYS.PRODUTOS)) || [];
+      return LojaDB.produtosCache;
     } catch {
       return [];
     }
@@ -47,12 +53,13 @@ class LojaDB {
   }
 
   static salvarProdutos(produtos) {
+    LojaDB.produtosCache = produtos;
     localStorage.setItem(LojaDB.KEYS.PRODUTOS, JSON.stringify(produtos));
   }
 
   static adicionarProduto(produto) {
     const produtos = LojaDB.getProdutos();
-    produto.id = Date.now();
+    produto.id = Date.now() + Math.floor(Math.random() * 1000);
     produtos.push(produto);
     LojaDB.salvarProdutos(produtos);
     return produto;
